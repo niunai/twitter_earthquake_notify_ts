@@ -6,12 +6,16 @@
   "scripts": {
     "start": "tsc && node dist/twitter_earthquake_notify.js",
     "test": "jest",
-    "build": "tsc"
+    "build": "tsc",
+    "lint": "eslint *.ts"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@types/jest": "^27.0.3",
+    "@typescript-eslint/eslint-plugin": "^5.8.0",
+    "@typescript-eslint/parser": "^5.8.0",
+    "eslint": "^8.5.0",
     "jest": "^27.4.5",
     "ts-jest": "^27.1.2",
     "ts-node": "^10.4.0",

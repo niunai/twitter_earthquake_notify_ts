@@ -50,7 +50,7 @@ export function makeNotifyMsg (username: string, text:string) {
   } else {
     return null;
   }
-};
+}
 
 export async function pushCount  (
   url: string,
@@ -75,4 +75,4 @@ export async function pushCount  (
   const resp = await needle("post", url, data, options);
 
   return resp.statusCode;
-};
+}

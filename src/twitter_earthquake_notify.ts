@@ -55,13 +55,13 @@ const gh_notify = (msg: string) => {
     text: msg,
   };
 
-  needle("post", GH_VOICETEXT_API_ENDPOINT_URL, data).catch((err: any) => {
+  needle("post", GH_VOICETEXT_API_ENDPOINT_URL, data).catch((err: unknown) => {
     console.error(err);
   });
 };
 
 const beep = () => {
-  player.play(BEEP_SOUND_FILE, (err: any) => {
+  player.play(BEEP_SOUND_FILE, (err: unknown) => {
     if (err) console.log(err);
   });
 };
@@ -71,12 +71,12 @@ const fetchData = async () => {
     [key: string]: number;
   }
 
-  let count: StringKeyObject = { yurekuru: 0, earthquake_jp: 0 };
+  const count: StringKeyObject = { yurekuru: 0, earthquake_jp: 0 };
 
   const rules = await client.v2.streamRules();
   if (rules.data?.length) {
     await client.v2.updateStreamRules({
-      delete: { ids: rules.data.map((rule: { id: any }) => rule.id) },
+      delete: { ids: rules.data.map((rule: { id: string }) => rule.id) },
     });
   }
 
@@ -98,12 +98,12 @@ const fetchData = async () => {
   stream.on(
     ETwitterStreamEvent.Data,
     async (tweet: {
-      includes: { users: any[] };
-      data: { author_id: any; text: any };
+      includes: { users: { id: string; username: string }[] };
+      data: { author_id: string; text: string };
     }) => {
-      const username = tweet.includes.users.find(
-        (elm) => elm.id === tweet.data.author_id
-      ).username;
+      const username =
+        tweet.includes.users.find((elm) => elm.id === tweet.data.author_id)
+          ?.username ?? "";
       const text = tweet.data.text;
       console.log(`===`);
       console.log(username, text);
@@ -125,13 +125,13 @@ const fetchData = async () => {
         "twitter_earthquake_notifications",
         username,
         count[username]
-      ).catch((err: any) => {
+      ).catch((err: unknown) => {
         console.error(err);
       });
     }
   );
 
-  stream.on(ETwitterStreamEvent.Error, async (error: { message: any }) => {
+  stream.on(ETwitterStreamEvent.Error, async (error: { message: string }) => {
     console.error(`Twitter Event:Error: ${error.message}`);
   });
   stream.on(ETwitterStreamEvent.ReconnectAttempt, async () => {
