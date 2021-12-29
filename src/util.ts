@@ -79,7 +79,22 @@ export async function pushCount(
 }
 
 export function getDateString() {
-  return new Date().toISOString().split(".")[0];
+  const z = (n: number) => ("0" + n).slice(-2);
+  const d = new Date();
+
+  return (
+    d.getFullYear() +
+    "-" +
+    z(d.getMonth() + 1) +
+    "-" +
+    z(d.getDate()) +
+    "T" +
+    z(d.getHours()) +
+    ":" +
+    z(d.getMinutes()) +
+    ":" +
+    z(d.getSeconds())
+  );
 }
 
 export function logErr(msg: string | unknown) {
