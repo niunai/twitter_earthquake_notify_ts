@@ -1,5 +1,5 @@
 import "dotenv/config";
-import { makeNotifyMsg, pushCount } from "./util";
+import { makeNotifyMsg, pushCount, getDateString } from "./util";
 
 describe("makeNotifyMsg", () => {
   test("yurekuru, 震度3", () => {
@@ -64,13 +64,13 @@ describe("makeNotifyMsg", () => {
 });
 
 describe("pushCount", () => {
-  
   test("push yurekuru 1", async () => {
     const status = await pushCount(
       process.env.PUSH_GATEWAY_API_ENDPOINT_URL ?? "",
       process.env.PUSH_GATEWAY_API_ENDPOINT_USER ?? "",
       process.env.PUSH_GATEWAY_API_ENDPOINT_PASSWORD ?? "",
       "twitter_earthquake_notifications",
+      "twitter earthquake notifications.",
       "yurekuru",
       1
     );
@@ -83,6 +83,7 @@ describe("pushCount", () => {
       process.env.PUSH_GATEWAY_API_ENDPOINT_USER ?? "",
       process.env.PUSH_GATEWAY_API_ENDPOINT_PASSWORD ?? "",
       "twitter_earthquake_notifications",
+      "twitter earthquake notifications.",
       "yurekuru",
       1
     );
@@ -95,10 +96,19 @@ describe("pushCount", () => {
       process.env.PUSH_GATEWAY_API_ENDPOINT_USER ?? "",
       "xxxx",
       "twitter_earthquake_notifications",
+      "twitter earthquake notifications.",
       "yurekuru",
       1
     );
     expect(status).toBe(401);
   });
+});
 
+describe("getDateString", () => {
+  const expectedRegExp = new RegExp(
+    String.raw`^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}`
+  );
+  test("getDateString", () => {
+    expect(getDateString()).toEqual(expect.stringMatching(expectedRegExp));
+  });
 });

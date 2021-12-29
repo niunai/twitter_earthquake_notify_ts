@@ -7,7 +7,7 @@ const toHalfWidth = (value: string) => {
   });
 };
 
-export function makeNotifyMsg (username: string, text:string) {
+export function makeNotifyMsg(username: string, text: string) {
   const MIN_SHINDO = 3;
 
   let out_text: string[];
@@ -52,17 +52,18 @@ export function makeNotifyMsg (username: string, text:string) {
   }
 }
 
-export async function pushCount  (
+export async function pushCount(
   url: string,
   username: string,
   password: string,
   metricsName: string,
+  metricsHelpText: string,
   metricsLabel: string,
   metsicsCount: number
 ) {
   //
   const data = `
-  # HELP ${metricsName} twitter earthquake notifications.
+  # HELP ${metricsName} ${metricsHelpText}
   # TYPE ${metricsName} counter
   ${metricsName}{label="${metricsLabel}"} ${metsicsCount}
   `;
@@ -75,4 +76,16 @@ export async function pushCount  (
   const resp = await needle("post", url, data, options);
 
   return resp.statusCode;
+}
+
+export function getDateString() {
+  return new Date().toISOString().split(".")[0];
+}
+
+export function logErr(msg: string | unknown) {
+  console.error(`${getDateString()}: ${msg}`);
+}
+
+export function logInfo(msg: string) {
+  console.log(`${getDateString()}: ${msg}`);
 }
