@@ -56,16 +56,17 @@ export async function pushCount(
   url: string,
   username: string,
   password: string,
+  jobName: string,
+  instanceName: string,
   metricsName: string,
   metricsHelpText: string,
-  metricsLabel: string,
   metsicsCount: number
 ) {
   //
   const data = `
   # HELP ${metricsName} ${metricsHelpText}
   # TYPE ${metricsName} counter
-  ${metricsName}{label="${metricsLabel}"} ${metsicsCount}
+  ${metricsName} ${metsicsCount}
   `;
 
   const options = {
@@ -73,7 +74,12 @@ export async function pushCount(
     password,
   };
 
-  const resp = await needle("post", url, data, options);
+  const resp = await needle(
+    "post",
+    `${url}/job/${jobName}/instance/${instanceName}`,
+    data,
+    options
+  );
 
   return resp.statusCode;
 }

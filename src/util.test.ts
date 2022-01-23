@@ -70,8 +70,23 @@ describe("pushCount", () => {
       process.env.PUSH_GATEWAY_API_ENDPOINT_USER ?? "",
       process.env.PUSH_GATEWAY_API_ENDPOINT_PASSWORD ?? "",
       "twitter_earthquake_notifications",
-      "twitter earthquake notifications.",
       "yurekuru",
+      "notifications",
+      "Number of twitter earthquake notifications.",
+      1
+    );
+    expect(status).toBe(200);
+  });
+
+  test("push earthquake_jp 1", async () => {
+    const status = await pushCount(
+      process.env.PUSH_GATEWAY_API_ENDPOINT_URL ?? "",
+      process.env.PUSH_GATEWAY_API_ENDPOINT_USER ?? "",
+      process.env.PUSH_GATEWAY_API_ENDPOINT_PASSWORD ?? "",
+      "twitter_earthquake_notifications",
+      "earthquake_jp",
+      "notifications",
+      "Number of twitter earthquake notifications.",
       1
     );
     expect(status).toBe(200);
@@ -83,11 +98,12 @@ describe("pushCount", () => {
       process.env.PUSH_GATEWAY_API_ENDPOINT_USER ?? "",
       process.env.PUSH_GATEWAY_API_ENDPOINT_PASSWORD ?? "",
       "twitter_earthquake_notifications",
-      "twitter earthquake notifications.",
       "yurekuru",
+      "notifications",
+      "Number of twitter earthquake notifications.",
       1
     );
-    expect(status).toBe(405);
+    expect(status === 404 || status === 405).toBeTruthy();
   });
 
   test("push yurekuru 1, wrong password", async () => {
@@ -96,8 +112,9 @@ describe("pushCount", () => {
       process.env.PUSH_GATEWAY_API_ENDPOINT_USER ?? "",
       "xxxx",
       "twitter_earthquake_notifications",
-      "twitter earthquake notifications.",
       "yurekuru",
+      "notifications",
+      "Number of twitter earthquake notifications.",
       1
     );
     expect(status).toBe(401);
