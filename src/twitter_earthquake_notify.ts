@@ -122,8 +122,9 @@ const fetchData = async () => {
         PUSH_GATEWAY_API_ENDPOINT_USER,
         PUSH_GATEWAY_API_ENDPOINT_PASSWORD,
         "twitter_earthquake_notifications",
-        "twitter earthquake notifications.",
         username,
+        "notifications",
+        "Number of twitter earthquake notifications.",
         count[username]
       ).catch((err: unknown) => {
         logErr(err);
