@@ -92,6 +92,7 @@ const fetchData = async () => {
     expansions: ["author_id"],
   });
   stream.autoReconnect = true;
+  stream.nextRetryTimeout = (tryOccurence) => 5000 * 2 ** tryOccurence;
 
   logInfo(`Listen to the twitter stream...`);
 
