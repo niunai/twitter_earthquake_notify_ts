@@ -68,10 +68,13 @@ const beep = () => {
 
 const fetchData = async () => {
   interface StringKeyObject {
-    [key: string]: number;
+    [key: string]: number[];
   }
 
-  const count: StringKeyObject = { yurekuru: 0, earthquake_jp: 0 };
+  const count: StringKeyObject = {
+    yurekuru: [0, 0, 0, 0, 0, 0, 0, 0],
+    earthquake_jp: [0, 0, 0, 0, 0, 0, 0, 0],
+  };
 
   const rules = await client.v2.streamRules();
   if (rules.data?.length) {
@@ -92,7 +95,7 @@ const fetchData = async () => {
     expansions: ["author_id"],
   });
   stream.autoReconnect = true;
-  stream.nextRetryTimeout = (tryOccurence) => 5000 * 2 ** tryOccurence;
+  stream.nextRetryTimeout = (tryOccurence) => 5000 * 4 ** tryOccurence;
 
   logInfo(`Listen to the twitter stream...`);
 
@@ -108,8 +111,8 @@ const fetchData = async () => {
       const text = tweet.data.text;
       console.log(username, text);
 
-      const msg = makeNotifyMsg(username, text);
-      if (msg) {
+      const [msg, shindo] = makeNotifyMsg(username, text);
+      if (msg.length > 0) {
         gh_notify(msg);
         logInfo(`gh_notify: ${msg}`);
       } else {
@@ -117,16 +120,16 @@ const fetchData = async () => {
         logInfo(`beep`);
       }
 
-      count[username]++;
+      count[username][shindo]++;
       pushCount(
         PUSH_GATEWAY_API_ENDPOINT_URL,
         PUSH_GATEWAY_API_ENDPOINT_USER,
         PUSH_GATEWAY_API_ENDPOINT_PASSWORD,
         "twitter_earthquake_notifications",
         username,
-        "notifications",
+        "notifications_" + `${shindo}`,
         "Number of twitter earthquake notifications.",
-        count[username]
+        count[username][shindo]
       ).catch((err: unknown) => {
         logErr(err);
       });
@@ -142,11 +145,23 @@ const fetchData = async () => {
   stream.on(ETwitterStreamEvent.Reconnected, async () => {
     logErr(`Twitter Event:Reconnected`);
   });
-  // stream.on(ETwitterStreamEvent.DataKeepAlive, async () => {
-  //   logErr(`Twitter Event:DataKeepAlive`);
-  // });
+  stream.on(ETwitterStreamEvent.DataKeepAlive, async () => {
+    // logInfo(`Twitter Event:DataKeepAlive`);
+    pushCount(
+      PUSH_GATEWAY_API_ENDPOINT_URL,
+      PUSH_GATEWAY_API_ENDPOINT_USER,
+      PUSH_GATEWAY_API_ENDPOINT_PASSWORD,
+      "twitter_earthquake_notifications",
+      "twitter_event_data_keep_alive",
+      "twitter_event_data_keep_alive",
+      "Twitter Event:DataKeepAlive",
+      1
+    ).catch((err: unknown) => {
+      logErr(err);
+    });
+  });
   stream.on(ETwitterStreamEvent.Connected, async () => {
-    logErr(`Connected to the Twitter stream`);
+    logInfo(`Connected to the Twitter stream`);
   });
 };
 

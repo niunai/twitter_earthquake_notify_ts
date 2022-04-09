@@ -7,7 +7,10 @@ const toHalfWidth = (value: string) => {
   });
 };
 
-export function makeNotifyMsg(username: string, text: string) {
+export function makeNotifyMsg(
+  username: string,
+  text: string
+): [string, number] {
   const MIN_SHINDO = 3;
 
   let out_text: string[];
@@ -31,7 +34,7 @@ export function makeNotifyMsg(username: string, text: string) {
     case "earthquake_jp":
       out_text = text.split(/\u3000/); // zenkaku space
       if (out_text[0].match(/速報/)) {
-        return null;
+        return ["", shindo];
       }
       shingenchi = out_text[2]?.split("（")[0] ?? "";
       shindoText = out_text[3]?.split("（")[0] ?? "";
@@ -42,13 +45,13 @@ export function makeNotifyMsg(username: string, text: string) {
       break;
 
     default:
-      return null;
+      return ["", shindo];
   }
 
   if (MIN_SHINDO <= shindo) {
-    return `地震です。震度${shindo}、${shingenchi}`;
+    return [`地震です。震度${shindo}、${shingenchi}`, shindo];
   } else {
-    return null;
+    return ["", shindo];
   }
 }
 
